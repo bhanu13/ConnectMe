@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block title %}
+ConnectMe | Sign Up
+{% endblock %}
+
+{% block content %}
+<div class = "container">
+ <h2>Signup Form</h2>
+ <hr>
+ <h4>Please enter your information here.</h4>
+    <form method="post">
+    	<div class = "col-md-12">
+    	<!-- The inputs begin here	 -->
+    		<div class = row>
+		      	<div class="form-group">
+		          <label class = "col-md-2" for="username">
+		            Username
+		          </label>
+		          <input type="text" id = "username" name="username" value="{{username}}">
+		        </div>
+
+		        <div class="col-md-2">
+		          <div class="text-danger">
+		            {{error_username}}
+		          </div>
+		        </div>
+	    	</div>
+    		
+    		<div class = row>
+		      	<div class="form-group">
+		          <label class = "col-md-2" for="password">
+		            Password
+		          </label>
+		          <input type="password" id = "password" name="password" value="">
+		        </div>
+
+		        <div class="col-md-4">
+		          <div class="text-danger">
+		            {{error_password}}
+		          </div>
+		        </div>
+	    	</div>
+
+    		<div class = row>
+		      	<div class="form-group">
+		          <label class = "col-md-2" for="password2">
+		            Verify Password
+		          </label>
+		          <input type="password" id = "password2" name="password2" value="">
+		        </div>
+
+		        <div class="col-md-4">
+		          <div class="text-danger">
+		            {{error_verify}}
+		          </div>
+		        </div>
+	    	</div>
+
+    		<div class = row>
+		      	<div class="form-group">
+		          <label class = "col-md-2" for="email">
+		            Email
+		          </label>
+		          <input type="text" id = "email" name="email" value="{{email}}">
+		        </div>
+
+		        <div class="col-md-4">
+		          <div class="text-danger">
+		            {{error_email}}
+		          </div>
+		        </div>
+	    	</div>
+
+
+      
+
+      	  <input class = "btn btn-primary"type="submit">
+      	</div>
+    </form>
+</div>
+{% endblock %}

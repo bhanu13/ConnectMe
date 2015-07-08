@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}
+ConnectMe | Log Out
+{% endblock %}
+
+{% block content %}
+<div class = "post container">
+	<h2>{{ logout_msg }}</h2>
+	{% if error_msg %}
+		<h3 class = "text-danger">{{ error_msg }}</h3>
+	{% endif %}
+</div>
+{% endblock %}

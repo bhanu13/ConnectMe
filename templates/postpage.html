@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block title %}
+ConnectMe | Home
+{% endblock %}
+
+{% block content %}
+<div class = "container">
+	<div class = row>
+		<div class="col-md-8"><h2> {{ post.title }} </h2></div>
+		<div class="col-md-4" align = "right"><h3> {{ post.created.strftime('%m/%d/%Y') }} </h3></div>
+	</div>
+	<hr>
+	<p class = "lead">{{ post.post.replace("\n", "<br>") | safe}}</p>	
+</div>
+{% endblock %}

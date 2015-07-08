@@ -1,0 +1,25 @@
+{% if log_in %}
+	{% extends "user_base.html" %}
+{% else %}
+	{% extends "base.html" %}
+{% endif %}
+
+{% block title %}
+ConnectMe | Home
+{% endblock %}
+
+{% block content %}
+<div class = "post container">
+	<h2> Recent Posts </h2>
+	<b><hr></b>
+	{% if posts %}
+		{% for p in posts %}
+		{{p.render() | safe}}
+		<hr>
+		{% endfor %}
+	{% else %}
+		<h3>No posts to show.</h3>
+	{% endif %}
+</div>
+{% endblock %}
+

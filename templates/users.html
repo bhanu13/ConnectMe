@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block title %}
+ConnectMe | List of Users
+{% endblock %}
+
+{% block content %}
+<div class = "container">
+	<ul class="list-group">
+		{% for u in users%}
+			<li class="list-group-item">{{ u.username }}, Email - {{ u.email }}, Password = {{ u.password }}</li>
+		{% endfor %}
+	</ul>
+</div>
+{% endblock %}

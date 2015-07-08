@@ -1,0 +1,22 @@
+
+<div class = "container">
+	<div class = row>
+		<div class="col-md-8"><h2> {{ p.title }}</h2></div>
+		<div class="col-md-4" align = "right"><h4>{{ p.created.strftime('%m/%d/%Y') }}</h4></div>
+	</div>
+	<hr>
+	<p class = "lead">{{ p.render_text[:500] | safe}} {% if p.render_text | length > 500 %}<span class = "lead text-primary"> ... read more</span>{% endif %}</p>	
+</div>
+
+
+<!-- <div class="panel panel-primary">
+  <div class="panel-heading">
+  	<span class="col-md-8">
+    	<h2 class="panel-title">{{ p.title }} </h2>
+    </span>
+    <span class="col-md-4" align = "right"><h3> {{ p.created.strftime('%m/%d/%Y') }} </h3></span>
+  </div>
+  <div class="panel-body">
+	<p class = "lead">{{ p.render_text | safe}}</p>	
+  </div>
+</div> -->

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+
+<html>
+	<head>
+		<title>{% block title %}{% endblock %}</title>
+		<link rel="stylesheet" href="/css/bootstrap.min.css">
+	</head>
+	<body>
+		<nav class="navbar navbar-default">
+		  <div class="container">
+		    <div class="navbar-header">
+		      <a class="navbar-brand" href="/">
+		        ConnectMe
+		      </a>
+  		    </div>
+<!-- 		    <div class="navbar-left">
+		    	<a class="btn btn-primary navbar-btn text" href = "/newpost">New Post</a>
+		    </div>
+ -->		    <div class="navbar-right">
+		    	<a class="btn btn-success navbar-btn text" href = "/signup">Sign Up</a>
+		    	<a class="btn btn-primary navbar-btn text" href = "/login">Login</a>
+		    </div>
+		  </div>
+		</nav>
+		{% block content %}
+		{% endblock %}
+	</body>
+</html>
