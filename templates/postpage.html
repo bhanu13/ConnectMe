@@ -4,7 +4,6 @@
 	{% extends "base.html" %}
 {% endif %}
 
-
 {% block title %}
 ConnectMe | Home
 {% endblock %}
@@ -13,9 +12,25 @@ ConnectMe | Home
 <div class = "container">
 	<div class = row>
 		<div class="col-md-8"><h2> {{ post.title }} </h2></div>
-		<div class="col-md-4" align = "right"><h3> {{ post.created.strftime('%m/%d/%Y') }} </h3></div>
+		<div class="col-md-4" align = "right"><h3>{{ post.created.strftime('%m/%d/%Y') }} by {{ post.author }}</h3></div>
 	</div>
 	<hr>
-	<p class = "lead">{{ post.post.replace("\n", "<br>") | safe}}</p>	
+	<p class = "lead">{{ post.post.replace("\n", "<br>") | safe}}</p>
+	<hr>
+	{% if log_in %}
+		<div class="fb-share-button" data-href="request.url" data-layout="button_count"></div>
+	{% else %}
+		<p class = "text-warning lead">Please signup to share this post.</p>
+	{% endif %}
 </div>
+{% if log_in %}
+	<div id="fb-root"></div>
+	<script>(function(d, s, id) {
+	  var js, fjs = d.getElementsByTagName(s)[0];
+	  if (d.getElementById(id)) return;
+	  js = d.createElement(s); js.id = id;
+	  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.4";
+	  fjs.parentNode.insertBefore(js, fjs);
+	}(document, 'script', 'facebook-jssdk'));</script>
+{% endif %}
 {% endblock %}

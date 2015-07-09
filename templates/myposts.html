@@ -11,7 +11,7 @@ ConnectMe | My Posts
 	{% if posts.count() != 0 %}
 	<form method = "post" action = "/myposts">
 		{% for p in posts %}
-		{{p.render() | safe}}
+		{{p.render_full() | safe}}
 		<div align = "right"><input type = "radio" name = "post" value = {{ p.key().id() }}></div>
 		<hr>
 		{% endfor %}

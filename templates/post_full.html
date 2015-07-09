@@ -1,0 +1,13 @@
+<div class = "container">
+	<div class = row>
+		<div class="col-md-8"><h2> {{ p.title }}</h2></div>
+		<div class="col-md-4" align = "right"><h4>{{ p.created.strftime('%m/%d/%Y') }}</h4></div>
+	</div>
+	<hr>
+	<p class = "lead">
+		{{ p.render_text[:500] | safe}}
+		<br>
+		<br>
+		<a href = "/posts/{{ p.key().id() }}">View Full Post</a>
+	</p>	
+</div>

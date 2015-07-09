@@ -15,7 +15,8 @@
 # limitations under the License.
 #
 
-# Use the temporary login details from the /users page
+# The main file which stores user passwords securely using a salt on SHA256
+
 
 from verify	import *
 from web_template import *
@@ -65,16 +66,17 @@ class Login(Handler):
 			self.render_main(error_msg="Please enter a valid username")
 			return
 
-		db_user = db.GqlQuery(" SELECT * FROM User WHERE username = \'%s\' AND password = \'%s\' " % (username, password))
+		db_user = db.GqlQuery(" SELECT * FROM User WHERE username = \'%s\'" % username)
 		user = db_user.get()
 		if user:
-			user_cookie = secure.hash_val(str(user.username))
-			self.set_cookie("username", user_cookie)
-			# self.set_cookie("username", user.username)
-			# self.redirect('/welcome?username=%s' % user.username)
-			self.redirect("/welcome")
-		else:
-			self.render_main(username = username, error_msg = "Invalid Login Information")
+			if secure.check_password(password, user.password):
+				user_cookie = secure.hash_val(str(user.username))
+				self.set_cookie("username", user_cookie)
+				# self.set_cookie("username", user.username)
+				# self.redirect('/welcome?username=%s' % user.username)
+				self.redirect("/welcome")
+				return
+		self.render_main(username = username, error_msg = "Invalid Login Information")
 
 
 class Welcome(Blog):
@@ -135,9 +137,10 @@ class SignUp(Handler):
 			self.render("signup.html", **parameters)
 
 		else:
-			new_user = User(username = username, password = password, email = email)
+			p = secure.create_password(password)
+			new_user = User(username = username, password = p, email = email)
 			new_user.put()
-			user_cookie = secure.hash_val(new_user.username)
+			user_cookie = secure.hash_val(str(new_user.username))
 			self.set_cookie("username", user_cookie)
 			self.redirect("/welcome")
 
@@ -155,13 +158,11 @@ class Logout(Handler):
 		self.render_main(logout_msg = "You have logged out successfully !", error_msg = msg)
 		
 #==================== List of Users =====================#
-"""
-# Uncomment this part to add the list of users page.
 class Users(Handler):
 	def get(self):
 		users = db.GqlQuery("SELECT * FROM User ORDER BY created DESC")
 		self.render("users.html", users = users)
-"""
+
 
 
 #==================== Blog Details ======================#
@@ -291,6 +292,6 @@ class IndividualPost(Blog):
 
 app = webapp2.WSGIApplication([
     ('/', MainPage), ('/newpost', NewPost), ('/posts/([0-9]+)', IndividualPost),
-    ('/welcome', Welcome), ('/signup', SignUp), ('/login', Login), ('/logout', Logout),
-    ('/myposts', UserPosts) # ('/users', Users)
+    ('/welcome', Welcome), ('/signup', SignUp), ('/users', Users), ('/login', Login), ('/logout', Logout),
+    ('/myposts', UserPosts)
 ], debug=True)
