@@ -12,10 +12,10 @@ ConnectMe | My Posts
 	<form method = "post" action = "/myposts">
 		{% for p in posts %}
 		{{p.render() | safe}}
-		<input align = "right" type = "radio" name = "post" value = {{ p.key().id() }}>
+		<div align = "right"><input type = "radio" name = "post" value = {{ p.key().id() }}></div>
 		<hr>
 		{% endfor %}
-	<input class = "btn btn-danger" type = "submit" value = "Delete">
+	<div align = "right"><input class = "btn btn-danger" type = "submit" value = "Delete"></div>
 	</form>
 	{% else %}
 		<h3>You don't have any posts yet. Please make a new post.</h3>

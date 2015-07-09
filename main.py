@@ -22,7 +22,7 @@ from web_template import *
 from google.appengine.ext import db
 import time
 
-#=============== Blog Display Details =================#
+#=============== A Blog Handler =================#
 
 
 class Blog(Handler):
@@ -36,7 +36,7 @@ class Blog(Handler):
 
 
 #================ User Registration ===================#
-
+# The User Object
 class User(db.Model):
 	username = db.StringProperty(required = True)
 	password = db.StringProperty(required = True)
@@ -52,7 +52,7 @@ class User(db.Model):
 	def by_id(cls, uid):
 		return User.get_by_id(uid)
 
-#
+
 class Login(Handler):
 	def render_main(self, username = "", error_msg = ""):
 		self.render("login.html", username = username, error_msg = error_msg)
@@ -69,7 +69,7 @@ class Login(Handler):
 			return
 
 		db_user = db.GqlQuery(" SELECT * FROM User WHERE username = \'%s\' AND password = \'%s\' " % (username, password))
-		user = db_user.get()	# If this object exists then login complete - Add cookie storage
+		user = db_user.get()
 		if user:
 			self.set_cookie("username", user.username)
 			# self.redirect('/welcome?username=%s' % user.username)
@@ -78,9 +78,7 @@ class Login(Handler):
 			self.render_main(username = username, error_msg = "Invalid Login Information")
 
 
-#
 class Welcome(Blog):
-
 	def get(self):
 		username = self.read_cookie("username")
 		if valid_username(username):
@@ -89,11 +87,8 @@ class Welcome(Blog):
 		else:
 			self.redirect("/signup")
 
-#
-
 
 class SignUp(Handler):
-
 	def get(self):
 		self.render("signup.html")
 
@@ -109,7 +104,7 @@ class SignUp(Handler):
 		if not valid_username(username):
 			parameters["error_username"] = "Not a valid username"
 			error = True
-#
+
 		u = User.by_name(username)
 		if u:
 			msg = 'That user already exists.'
@@ -118,7 +113,6 @@ class SignUp(Handler):
 			error = True
 			return
 
-#
 		if not valid_password(password):
 			parameters["error_password"] = "Not a valid password"
 			error = True
@@ -140,6 +134,7 @@ class SignUp(Handler):
 			self.set_cookie("username", new_user.username)
 			self.redirect("/welcome")
 
+
 class Logout(Handler):
 	def logout(self):
 		self.set_cookie("username", "")
@@ -152,6 +147,7 @@ class Logout(Handler):
 		self.logout()
 		self.render_main(logout_msg = "You have logged out successfully !", error_msg = msg)
 		
+#==================== List of Users =====================#
 class Users(Handler):
 	def get(self):
 		users = db.GqlQuery("SELECT * FROM User ORDER BY created DESC")
@@ -159,8 +155,9 @@ class Users(Handler):
 
 
 
+#==================== Blog Details ======================#
+# The Post object
 
-#======================================================#
 class Post(db.Model):
 	author = db.StringProperty(required=True)
 	title = db.StringProperty(required=True)
@@ -189,7 +186,7 @@ class Post(db.Model):
 		post = Post.by_id(post_id)
 		if post:
 			post.delete()
-
+#=======================================================#
 class MainPage(Blog):
 	def render_main(self):
 		posts = db.GqlQuery("SELECT * FROM Post ORDER BY created DESC limit 10 ")
@@ -231,7 +228,6 @@ class NewPost(Blog):
 			error_msg = "Please fill out all the fields."
 			self.render_main(author, title, post, error_msg)
 
-#
 
 class UserPosts(Blog):
 
@@ -255,7 +251,7 @@ class UserPosts(Blog):
 		Post.remove_by_id(int(post_id))
 		time.sleep(0.1)		# Delay for the Google Data Store to process the request 
 		self.render_main()
-#
+
 
 class IndividualPost(Handler):
 	def get(self, post_id):
