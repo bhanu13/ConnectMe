@@ -1,5 +1,4 @@
 <h2>ConnectMe | A Simple Scalable Blog</h2>
-<hr>
 <h3>Features</h3>
 <ul>
 	<li>User signup, login and logout pages.</li>
@@ -32,7 +31,7 @@
 <h3>TODO</h3>
 - Add hashing to store passwords.
 - Add hashing to cookie storage.
-- Add sharing links to each.
+- Add sharing links to each individual post page.
 - Add footer linking to my github account.
 
 <h3>Future Ideas</h3>
