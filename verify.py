@@ -1,5 +1,5 @@
 """
-Basic Verification Code for username, password and email ID
+Useful Verification Code for username, password and email ID.
 
 """
 

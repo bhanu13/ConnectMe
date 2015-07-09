@@ -1,7 +1,7 @@
 """
-A simple template for making websites using webapp2 and jinja2
+A simple template for making webapps on GAE.
 
-Author - bagarwa2, 08/07/15
+Author - bagarwa2, Updated - 08/07/15
 
 """
 
