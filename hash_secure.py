@@ -1,3 +1,8 @@
+"""
+Useful functions for creating secure hashes to store passwords and set cookies.
+
+"""
+
 import hmac
 import hashlib
 import random

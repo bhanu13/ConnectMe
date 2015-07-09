@@ -15,7 +15,12 @@
 # limitations under the License.
 #
 
-# Use the temporary login details from the /users page
+"""
+The main blog file that implements the functionality of all the pages.
+
+
+Author - bagarwa2
+"""
 
 from verify	import *
 from web_template import *
@@ -154,15 +159,6 @@ class Logout(Handler):
 		self.logout()
 		self.render_main(logout_msg = "You have logged out successfully !", error_msg = msg)
 		
-#==================== List of Users =====================#
-"""
-# Uncomment this part to add the list of users page.
-class Users(Handler):
-	def get(self):
-		users = db.GqlQuery("SELECT * FROM User ORDER BY created DESC")
-		self.render("users.html", users = users)
-"""
-
 
 #==================== Blog Details ======================#
 # The Post object

@@ -1,5 +1,5 @@
 """
-A simple template for making webapps on GAE.
+A basic template for making webapps on GAE.
 
 Author - bagarwa2, Updated - 08/07/15
 

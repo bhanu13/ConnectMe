@@ -157,13 +157,6 @@ class Logout(Handler):
 		self.logout()
 		self.render_main(logout_msg = "You have logged out successfully !", error_msg = msg)
 		
-#==================== List of Users =====================#
-class Users(Handler):
-	def get(self):
-		users = db.GqlQuery("SELECT * FROM User ORDER BY created DESC")
-		self.render("users.html", users = users)
-
-
 
 #==================== Blog Details ======================#
 # The Post object
