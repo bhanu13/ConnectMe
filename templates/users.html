@@ -6,10 +6,16 @@ ConnectMe | List of Users
 
 {% block content %}
 <div class = "container">
+	<h2>A list of all users.</h2>
+	<hr>
+	{% if users.count() != 0 %}
 	<ul class="list-group">
-		{% for u in users%}
+		{% for u in users %}
 			<li class="list-group-item">{{ u.username }}, Email - {{ u.email }}, Password = {{ u.password }}</li>
 		{% endfor %}
 	</ul>
+	{% else %}
+	<h3>No users yet.</h3>
+	{% endif %}
 </div>
 {% endblock %}

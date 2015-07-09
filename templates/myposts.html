@@ -1,0 +1,26 @@
+{% extends "user_base.html" %}
+
+{% block title %}
+ConnectMe | My Posts
+{% endblock %}
+
+{% block content %}
+<div class = "post container">
+	<h2> All of your Posts </h2>
+	<hr>
+	{% if posts.count() != 0 %}
+	<form method = "post" action = "/myposts">
+		{% for p in posts %}
+		{{p.render() | safe}}
+		<input align = "right" type = "radio" name = "post" value = {{ p.key().id() }}>
+		<hr>
+		{% endfor %}
+	<input class = "btn btn-danger" type = "submit" value = "Delete">
+	</form>
+	{% else %}
+		<h3>You don't have any posts yet. Please make a new post.</h3>
+	{% endif %}
+	<p class = "text-danger">{{error_msg}}</p>
+</div>
+
+{% endblock %}

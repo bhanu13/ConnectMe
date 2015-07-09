@@ -5,35 +5,38 @@ ConnectMe | Make a new Post
 {% endblock %}
 
 {% block content %}
-<div class = "container jumbotron">
-	<div class = "col-md-6 col-md-offset-3">
-	<form method = "post">
-<!-- 		<div class = "form-group">
-			<label>
-				Name		
-				<input type = "text" class="form-control" name = "author" value = "{{author}}">
-			</label>
-		</div>
- -->		<div class = "form-group">
-			<label>
-				Title of Post
-				<input type = "text" class="form-control" name = "title" value = "{{title}}">
-			</label>
-		</div>
-		<div class = "form-group">
-			<label>
-				Your Post
-			</label>
-				<textarea rows= "7" class="form-control" name = "post">{{post}}</textarea>
-		</div>
-		<input class = "btn btn-success" type = "submit">
-	</form>
+<div class = "container">
+	<h2>Make a new Post</h2>
 
-	<div class="text-danger">  
-		{{error_msg}}
-	</div>
+	<div class = "container jumbotron">
+		<div class = "col-md-6 col-md-offset-3">
+		<form method = "post">
+	<!-- 		<div class = "form-group">
+				<label>
+					Name		
+					<input type = "text" class="form-control" name = "author" value = "{{author}}">
+				</label>
+			</div>
+	 -->		<div class = "form-group">
+				<label>
+					Title of Post
+					<input type = "text" class="form-control" name = "title" value = "{{title}}">
+				</label>
+			</div>
+			<div class = "form-group">
+				<label>
+					Your Post
+				</label>
+					<textarea rows= "7" class="form-control" name = "post">{{post}}</textarea>
+			</div>
+			<input class = "btn btn-success" type = "submit">
+		</form>
+
+		<div class="text-danger">  
+			{{error_msg}}
+		</div>
+		</div>
 	</div>
 </div>
-
 
 {% endblock %}

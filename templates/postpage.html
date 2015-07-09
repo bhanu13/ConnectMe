@@ -1,4 +1,9 @@
-{% extends "base.html" %}
+{% if log_in %}
+	{% extends "user_base.html" %}
+{% else %}
+	{% extends "base.html" %}
+{% endif %}
+
 
 {% block title %}
 ConnectMe | Home

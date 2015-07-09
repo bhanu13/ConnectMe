@@ -20,6 +20,20 @@
 from verify	import *
 from web_template import *
 from google.appengine.ext import db
+import time
+
+#=============== Blog Display Details =================#
+
+
+class Blog(Handler):
+	def auth(self):
+		u = self.read_cookie("username")
+		u = User.by_name(u)
+		if u:
+			return True
+		else:
+			return False
+
 
 #================ User Registration ===================#
 
@@ -65,12 +79,13 @@ class Login(Handler):
 
 
 #
-class Welcome(Handler):
+class Welcome(Blog):
 
 	def get(self):
 		username = self.read_cookie("username")
 		if valid_username(username):
 			self.render("welcome.html", username = username)
+
 		else:
 			self.redirect("/signup")
 
@@ -142,17 +157,7 @@ class Users(Handler):
 		users = db.GqlQuery("SELECT * FROM User ORDER BY created DESC")
 		self.render("users.html", users = users)
 
-#=============== Blog Display Details =================#
 
-
-class Blog(Handler):
-	def auth(self):
-		u = self.read_cookie("username")
-		u = User.by_name(u)
-		if u:
-			return True
-		else:
-			return False
 
 
 #======================================================#
@@ -167,6 +172,23 @@ class Post(db.Model):
 		self.render_text = self.post.replace("\n", "<br>")
 		return render_str("post.html", p = self)
 
+	@classmethod	
+	def by_author(cls, author):
+		# posts = Post.all().filter('author =', author).get()
+		posts = db.GqlQuery("SELECT * FROM Post WHERE author = \'%s\'" % author)
+		return posts
+
+	@classmethod
+	def by_id(cls, post_id):
+		return Post.get_by_id(post_id)
+
+	@classmethod
+	def remove_by_id(cls, post_id):
+		# key = db.Key.from_path("Post", int(post_id))
+		# post = db.get(key)
+		post = Post.by_id(post_id)
+		if post:
+			post.delete()
 
 class MainPage(Blog):
 	def render_main(self):
@@ -209,15 +231,31 @@ class NewPost(Blog):
 			error_msg = "Please fill out all the fields."
 			self.render_main(author, title, post, error_msg)
 
+#
+
 class UserPosts(Blog):
 
-	def get(self):
+	def render_main(self, error_msg = ""):
 		if self.auth():
-			self.write("Hello my Posts are here.")
+			username = self.read_cookie("username")
+			posts = Post.by_author(username)
+			self.render("myposts.html", posts = posts, error_msg = error_msg)
 		else:
 			error_msg = "You have an invalid session, please login again"
 			self.redirect("/logout?error_msg="+error_msg)
 
+	def get(self):
+		self.render_main()
+
+	def post(self):
+		post_id = self.request.get("post")
+		if not post_id:
+			self.render_main(error_msg = "You didn't select anything")
+			return
+		Post.remove_by_id(int(post_id))
+		time.sleep(0.1)		# Delay for the Google Data Store to process the request 
+		self.render_main()
+#
 
 class IndividualPost(Handler):
 	def get(self, post_id):
