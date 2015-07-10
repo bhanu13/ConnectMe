@@ -21,7 +21,7 @@ def check_val(value):
 
 def hash_val(value):
 	if value:
-		hash_val = hmac.new(value, key).hexdigest()
+		hash_val = hmac.new(str(value), key).hexdigest()
 		return str(value + "|" + hash_val)
 
 def original_val(value):

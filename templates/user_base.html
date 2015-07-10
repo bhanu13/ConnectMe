@@ -4,6 +4,7 @@
 	<head>
 		<title>{% block title %}{% endblock %}</title>
 		<link rel="stylesheet" href="/css/bootstrap.min.css">
+		<link href="/css/sticky-footer.css" rel="stylesheet">
 	</head>
 	<body>
 		<nav class="navbar navbar-default">
@@ -24,5 +25,10 @@
 		</nav>
 		{% block content %}
 		{% endblock %}
+	    <footer class="footer">
+	      <div class="container">
+	        <div class="text-muted" align = "right">Created by <a href = "https://www.github.com/bhanu13/ConnectMe">bhanu13</a></div>
+	      </div>
+	    </footer>
 	</body>
 </html>
