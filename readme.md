@@ -4,7 +4,7 @@
 <h3>Features</h3>
 <ul>
 	<li>User signup, login and logout pages.</li>
-	<li>Ability to add a new post or delete exiting posts.</li>
+	<li>Ability to add a new post or delete existing posts.</li>
 	<li>View posts by all users.</li>
 	<li>Generates a shareable permalink on Facebook for each new post.</li>
 </ul>
@@ -37,6 +37,6 @@
 - Add a User Profile Page to update user information.
 - Infinite Possibilites
 
-Please shoot me an email for any questions or comments.
+Please shoot me an email for any questions or comments. You can check out a sample website <a href = "http://connectme-ba.appspot.com/">here</a>.
 
 Author - bagarwa2
