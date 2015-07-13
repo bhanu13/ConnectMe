@@ -7,13 +7,14 @@
 	<li>Ability to add a new post or delete existing posts.</li>
 	<li>View posts by all users.</li>
 	<li>Generates a shareable permalink on Facebook for each new post.</li>
+	<li>View all post data in JSON.</li>
 </ul>
 <hr>
 <h3>Scalibility</h3>
 <ul>
 	<li>Robust user session verification through cryptographically hashed cookies.</li>
 	<li>Secure user password storage using a salt on SHA256. Refer to _main.py and hash_secure.py</li>
-	<li>Allows user information verification during registration.</li>
+	<li>Avails post data in JSON for use by other webapps. Refer to /.json</li>
 </ul>
 <hr>
 <h3>Reusability</h3>

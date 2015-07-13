@@ -27,6 +27,7 @@ from web_template import *
 from google.appengine.ext import db
 import time
 import hash_secure as secure
+import json
 
 #=============== A Blog Handler =================#
 
@@ -195,6 +196,15 @@ class Post(db.Model):
 		post = Post.by_id(post_id)
 		if post:
 			post.delete()
+
+	def as_dict(self):
+		d = {	'author':self.author,
+				'title':self.title,
+				'post':self.post,
+				'created':self.created.strftime('%c'),
+				'last_modified':self.last_modified.strftime('%c')
+		}
+		return d
 #=======================================================#
 class MainPage(Blog):
 	def render_main(self):
@@ -283,10 +293,31 @@ class IndividualPost(Blog):
 		# 	self.redirect("/signup?error_msg=" + error)
 
 #=====================================================#
+# Added JSON responses
+class JsonHandler(Handler):
+	def render_json(self, d):
+		json_text = json.dumps(d)
+		self.response.headers['Content-Type'] = 'application/json; charset=UTF-8'
+		self.write(json_text)
 
+class MainPageJson(JsonHandler):	
+	def get(self):
+		posts = db.GqlQuery("SELECT * FROM Post")
+		p_dict = list()
+		for p in posts:
+			p_dict.append(p.as_dict())
+		self.render_json(p_dict)
+
+class PostPageJson(JsonHandler):
+	def get(self, post_id):
+		# key = db.Key.from_path("Post", int(post_id))
+		p = Post.by_id(int(post_id))
+		self.render_json(p.as_dict())
+
+#=====================================================#
 
 app = webapp2.WSGIApplication([
-    ('/', MainPage), ('/newpost', NewPost), ('/posts/([0-9]+)', IndividualPost),
+    ('/', MainPage), ('/newpost', NewPost), ('/posts/([0-9]+)', IndividualPost), ('/posts/([0-9]+).json', PostPageJson),
     ('/welcome', Welcome), ('/signup', SignUp), ('/login', Login), ('/logout', Logout),
-    ('/myposts', UserPosts) # ('/users', Users)
+    ('/myposts', UserPosts), ('/.json', MainPageJson) # ('/users', Users)
 ], debug=True)
