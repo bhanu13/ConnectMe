@@ -224,8 +224,8 @@ class Post(db.Model):
 		if posts is None or update:
 			logging.warning("DB QUERY")
 			posts = db.GqlQuery("SELECT * FROM Post WHERE author = \'%s\' ORDER BY created DESC" % author)
-
-			posts = list(posts)
+			if posts:
+				posts = list(posts)
 			memcache.set(key, posts)
 		
 		return posts
@@ -354,8 +354,14 @@ class IndividualPost(Blog):
 		log_in = True
 		if not self.auth():
 			log_in = False
-		key = db.Key.from_path("Post", int(post_id))
-		post = db.get(key)
+		post_key = 'POST' + post_id
+		post = memcache.get(post_key)
+
+		if not post:
+			key = db.Key.from_path("Post", int(post_id))
+			post = db.get(key)
+			logging.warning("DB QUERY")
+			memcache.set(post_key, post)
 
 		if not post:
 			# self.write("Some Error %s" % post_id)
