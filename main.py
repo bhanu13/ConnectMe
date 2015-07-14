@@ -342,6 +342,8 @@ class UserPosts(Blog):
 			self.render_main(error_msg = "You didn't select anything")
 			return
 		Post.remove_by_id(int(post_id))
+		post_key = 'POST' + str(post_id)
+		memcache.delete(post_key)
 		time.sleep(0.1)		# Delay for the Google Data Store to process the request 
 		Post.recent_posts(update = True)
 		username = self.get_user()
