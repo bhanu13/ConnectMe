@@ -1,5 +1,5 @@
 <h2>ConnectMe | A Tiny Scalable Blog</h2>
-<p>ConnectMe is a simple blog that implements user registration and session management securely with a focus on code reusability. <!-- Go to the website to try it out. --></p>
+<p>ConnectMe is a simple blog that implements user registration and session management securely with a focus on scalibility and code reusability. <!-- Go to the website to try it out. --></p>
 <hr>
 <h3>Features</h3>
 <ul>
@@ -15,6 +15,7 @@
 	<li>Robust user session verification through cryptographically hashed cookies.</li>
 	<li>Secure user password storage using a salt on SHA256. Refer to _main.py and hash_secure.py</li>
 	<li>Avails post data in JSON for use by other webapps. Refer to /.json</li>
+	<li>Uses Memcache to minimize the number of DB Queries.</li>
 </ul>
 <hr>
 <h3>Reusability</h3>
@@ -28,6 +29,7 @@
 <ul>
 	<li>webapp2</li>
 	<li>Google App Engine and Data Store</li>
+	<li>Memcache</li>
 	<li>Jinja2</li>
 	<li>Bootstrap</li>
 </ul>

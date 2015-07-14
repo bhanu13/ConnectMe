@@ -8,7 +8,7 @@ ConnectMe | My Posts
 <div class = "post container">
 	<h2> All of your Posts </h2>
 	<hr>
-	{% if posts.count() != 0 %}
+	{% if posts %}
 	<form method = "post" action = "/myposts">
 		{% for p in posts %}
 		{{p.render_full() | safe}}

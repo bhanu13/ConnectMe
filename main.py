@@ -25,6 +25,9 @@ Author - bagarwa2
 from verify	import *
 from web_template import *
 from google.appengine.ext import db
+from google.appengine.api import memcache
+
+import logging
 import time
 import hash_secure as secure
 import json
@@ -55,6 +58,19 @@ class User(db.Model):
 	def by_id(cls, uid):
 		return User.get_by_id(uid)
 
+def recent_users(update = False):
+	key = "newest_users"
+	users = memcache.get(key)
+	
+	if update or users == None:
+		logging.warning("DB QUERY")
+		users = db.GqlQuery(" SELECT * FROM User ")
+		users = list(users)
+		memcache.set(key, users)
+	
+	return users
+		
+
 
 class Login(Handler):
 	def render_main(self, username = "", error_msg = ""):
@@ -71,8 +87,12 @@ class Login(Handler):
 			self.render_main(error_msg="Please enter a valid username")
 			return
 
-		db_user = db.GqlQuery(" SELECT * FROM User WHERE username = \'%s\' AND password = \'%s\' " % (username, password))
-		user = db_user.get()
+		users = recent_users()
+		user = None
+		for u in users:
+			if u.username == username and u.password == password:
+				user = u
+				break
 		if user:
 			user_cookie = secure.hash_val(str(user.username))
 			self.set_cookie("username", user_cookie)
@@ -117,7 +137,11 @@ class SignUp(Handler):
 			parameters["error_username"] = "Not a valid username"
 			error = True
 
-		u = User.by_name(username)
+		users = recent_users()
+		u = False
+		for user in users:
+			if user.username == username:
+				u = True
 		if u:
 			msg = 'That user already exists.'
 			parameters["error_username"] = msg
@@ -128,7 +152,8 @@ class SignUp(Handler):
 		if not valid_password(password):
 			parameters["error_password"] = "Not a valid password"
 			error = True
-		
+			return
+
 		if password != password2:
 			parameters["error_verify"] = "The passwords don't match"
 			error = True
@@ -143,12 +168,19 @@ class SignUp(Handler):
 		else:
 			new_user = User(username = username, password = password, email = email)
 			new_user.put()
+			recent_users(update = True)
 			user_cookie = secure.hash_val(new_user.username)
 			self.set_cookie("username", user_cookie)
 			self.redirect("/welcome")
 
 
 class Logout(Handler):
+
+	def get_user(self):
+		username = self.read_cookie("username")
+		username = secure.original_val(username)
+		return username
+
 	def logout(self):
 		self.set_cookie("username", "")
 
@@ -157,7 +189,10 @@ class Logout(Handler):
 
 	def get(self):
 		msg = self.request.get("error_msg")
+		username = self.get_user()
 		self.logout()
+		if username:
+			memcache.delete(username)
 		self.render_main(logout_msg = "You have logged out successfully !", error_msg = msg)
 		
 
@@ -179,11 +214,22 @@ class Post(db.Model):
 		self.render_text = self.post.replace("\n", "<br>")
 		return render_str("post_full.html", p = self)
 
+	# Added memcaching
 	@classmethod	
-	def by_author(cls, author):
+	def by_author(cls, author, update = False):
 		# posts = Post.all().filter('author =', author).get()
-		posts = db.GqlQuery("SELECT * FROM Post WHERE author = \'%s\'" % author)
+		key = str(author)
+		posts = memcache.get(key)
+
+		if posts is None or update:
+			logging.warning("DB QUERY")
+			posts = db.GqlQuery("SELECT * FROM Post WHERE author = \'%s\' ORDER BY created DESC" % author)
+
+			posts = list(posts)
+			memcache.set(key, posts)
+		
 		return posts
+		
 
 	@classmethod
 	def by_id(cls, post_id):
@@ -205,10 +251,28 @@ class Post(db.Model):
 				'last_modified':self.last_modified.strftime('%c')
 		}
 		return d
+
+	# Added memcaching
+	@classmethod
+	def recent_posts(cls, update = False):
+		key = "newest_posts"
+		posts = memcache.get(key)
+
+		if posts is None or update:
+			logging.warning("DB QUERY")
+			posts = db.GqlQuery("SELECT * FROM Post ORDER BY created DESC")
+
+			posts = list(posts)
+			memcache.set(key, posts)
+		
+		return posts
+
+
 #=======================================================#
 class MainPage(Blog):
 	def render_main(self):
-		posts = db.GqlQuery("SELECT * FROM Post ORDER BY created DESC limit 10 ")
+		posts = Post.recent_posts()
+		posts = posts[:10]
 		
 		if self.auth():
 			self.render("home.html", posts=posts, log_in = True)	# Look into return type if list is empty to add error msg
@@ -243,6 +307,9 @@ class NewPost(Blog):
 		if author and post and title:
 			p = Post(author=author, title=title, post=post)
 			p.put()
+			time.sleep(0.1)
+			Post.recent_posts(update = True)
+			Post.by_author(author = author, update = True)
 			self.redirect("/posts/%s" % str(p.key().id()) )
 
 		else:
@@ -252,11 +319,15 @@ class NewPost(Blog):
 
 class UserPosts(Blog):
 
+	def get_user(self):
+		username = self.read_cookie("username")
+		username = secure.original_val(username)
+		return username
+
 	def render_main(self, error_msg = ""):
 		if self.auth():
-			username = self.read_cookie("username")
-			username = secure.original_val(username)
-			posts = Post.by_author(username)
+			username = self.get_user()
+			posts = Post.by_author(author = username)
 			self.render("myposts.html", posts = posts, error_msg = error_msg)
 		else:
 			error_msg = "You have an invalid session, please login again"
@@ -272,6 +343,9 @@ class UserPosts(Blog):
 			return
 		Post.remove_by_id(int(post_id))
 		time.sleep(0.1)		# Delay for the Google Data Store to process the request 
+		Post.recent_posts(update = True)
+		username = self.get_user()
+		Post.by_author(author = username, update = True)
 		self.render_main()
 
 
@@ -294,6 +368,7 @@ class IndividualPost(Blog):
 
 #=====================================================#
 # Added JSON responses
+
 class JsonHandler(Handler):
 	def render_json(self, d):
 		json_text = json.dumps(d)
@@ -302,7 +377,8 @@ class JsonHandler(Handler):
 
 class MainPageJson(JsonHandler):	
 	def get(self):
-		posts = db.GqlQuery("SELECT * FROM Post")
+		posts = Post.recent_posts()
+		posts = posts[:10]
 		p_dict = list()
 		for p in posts:
 			p_dict.append(p.as_dict())

@@ -21,7 +21,7 @@ ConnectMe | Home
 
 	<h2> Recent Posts </h2>
 	<hr>
-	{% if posts.count() != 0 %}
+	{% if posts %}
 		{% for p in posts %}
 		{{p.render_full() | safe}}
 		<hr>
