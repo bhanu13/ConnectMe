@@ -1,5 +1,5 @@
 <h2>ConnectMe | A Tiny Scalable Blog</h2>
-<p>ConnectMe is a simple blog that implements user registration and session management securely with a focus on scalibility and code reusability. <!-- Go to the website to try it out. --></p>
+<p>ConnectMe is a simple blog that implements user registration and session management securely with a focus on scalability and code reusability. <!-- Go to the website to try it out. --></p>
 <hr>
 <h3>Features</h3>
 <ul>
